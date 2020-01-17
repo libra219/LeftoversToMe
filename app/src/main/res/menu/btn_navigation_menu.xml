@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/btn_menu_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/btn_nav_home" />
+    <item
+        android:id="@+id/btn_menu_favorites"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:title="@string/btn_nav_favorites" />
+    <item
+        android:id="@+id/btn_menu_mypage"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="@string/btn_nav_mypage" />
+</menu>

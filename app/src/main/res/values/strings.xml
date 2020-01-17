@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">LeftoversToMe</string>
+    <string name="bg_img">LeftoversToMe</string>
+    <string name="btn_registration">登録</string>
+    <string name="btn_login">ログイン</string>
+    <string name="btn_next">次へ</string>
+    <string name="title_activity_login">ログイン</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_username">UserName</string>
+    <string name="prompt_age">年齢</string>
+    <string name="prompt_nearest_station">最寄り駅</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >7 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sns_loginTwitter">Twitterでログイン</string>
+    <string name="sns_loginFacebook">Facebookでログイン</string>
+    <string name="sns_loginLINE">LINEでログイン</string>
+    <string name="btn_">LINEでログイン</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="btn_nav_home">HOME</string>
+    <string name="btn_nav_favorites">FAVORITES</string>
+    <string name="btn_nav_mypage">MYPAGE</string>
+
+</resources>
