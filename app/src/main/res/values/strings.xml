@@ -22,6 +22,8 @@
     <string name="btn_">LINEでログイン</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="btn_keep">キープする！</string>
+
     <string name="btn_nav_home">HOME</string>
     <string name="btn_nav_favorites">FAVORITES</string>
     <string name="btn_nav_mypage">MYPAGE</string>

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "929701397595-igri2j5f0iua5j0t5m4jl0lgf9hha3j8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "local.libra219.android.leftoverstome",
+            "certificate_hash": "fdaf93046a065887c18efaf1253fa2154669d38a"
+          }
+        },
+        {
           "client_id": "929701397595-3jvhndk8go476mlsdppu5mo5i17krlpj.apps.googleusercontent.com",
           "client_type": 3
         }
