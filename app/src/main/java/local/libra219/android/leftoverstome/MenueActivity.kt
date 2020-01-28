@@ -175,18 +175,13 @@ class MenueActivity : AppCompatActivity() {
         var tagNa = "fDatabaseRef"
         var shopDocList: MutableMap<String, Map<String, String>> = mutableMapOf()
         var shopDataList = mutableListOf<Any>()
-        val lvSetList: MutableList<Map<String, String>> = ArrayList()
-        var lvSetMap: MutableMap<String, String> = HashMap()
+        var lvSetList: MutableList<Map<String, String>> = ArrayList()
+        var lvSetMap: MutableMap<String, String> = hashMapOf()
 
-        var getData: MutableList<String?> = mutableListOf()
-        var shopLists: MutableList<List<String>> = mutableListOf()
 
         var shopId: Int = 0
         var shopTitleName: String = ""
         var shopDescription: String = ""
-        var shopUserId: Int = 0
-        var shopImg: String = ""
-        var shopLatLng: GeoPoint = GeoPoint(0.0, 0.0)
 
 //        Databaseの取得。SELECT * FROM user WHERE id = 0みたいに取れる
         firebaseDatabase?.collection("shop")?.whereEqualTo("users", 0)
@@ -220,10 +215,6 @@ class MenueActivity : AppCompatActivity() {
             }
 
 
-//        販売情報
-//        変数初期化
-
-
 
 
         Log.d(tagNa, "========================================================================")
@@ -240,51 +231,37 @@ class MenueActivity : AppCompatActivity() {
                     shopDescription = document.get("description").toString()
                     Log.d(TAG, shopId.toString())
                 }
+
                 /** 商品情報取得 **/
-                firebaseDatabase?.collection("item")
+                val docRef = firebaseDatabase?.collection("item")
                     ?.whereEqualTo("shop_id", shopId)
-                    ?.get()
-                    ?.addOnSuccessListener{ documents ->
-                        for (document in documents){
-                            Log.d(TAG, "=== item === ${document.id} => ${document.data}")
-                            shopDocList.put(
-                                document.id,
-                                mapOf("shop_id" to "${document.get("shop_id")}",
-                                    "name" to "${document.get("name")}",
-                                    "explanation" to "${document.get("explanation")}",
-                                    "price" to "${document.get("price")}",
-                                    "sale" to "${document.get("sale")}",
-                                    "img" to "${document.get("img")}"
-                                    ))
-                            shopDataList.add(shopDocList)
+                    ?.whereEqualTo("keep_id","0")
+                docRef?.addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null) {
+                        lvSetList = arrayListOf()
+                        Log.d(TAG, "Current data: ${snapshot.documents}")
+                        for(document in snapshot.documents){
+                            Log.d(TAG, "Current data: ${document.id} => ${document.get("name")}")
+                            lvSetMap = hashMapOf()
+                            lvSetMap["primary_key"] = document.id
+                            lvSetMap["name"] = document.get("name").toString()
+                            lvSetMap["explanation"] = document.get("explanation").toString()
+                            lvSetMap["price"] = document.get("price").toString()
+                            lvSetMap["sale"] = document.get("sale").toString()
+                            lvSetMap["img"] = document.get("img").toString()
+                            lvSetMap["keep_id"] = document.get("keep_id").toString()
+                            lvSetMap["shop_id"] = document.get("shop_id").toString()
+                            lvSetList.add(lvSetMap)
                         }
-                        for (list in shopDocList) {
-                            Log.d(TAG, "=== List === ${list.value["shop_id"]}")
-                            var i = 0
-                            getData = mutableListOf()
-                            shopLists.add((listOf(list.value["shop_id"].toString(), list.value["name"].toString(), list.value["explanation"].toString(), list.value["price"].toString(), list.key)))
-                            i.inc()
-                            lvSetMap = HashMap()
-                        }
 
+                        _List = lvSetList
 
-                        val list1: MutableList<Map<String, String>> = ArrayList()
-                        var map1: MutableMap<String, String>
-                        var i = 0
-                        for (list in shopLists){
-                            Log.d("shopTitle", shopLists[i][1])
-                            map1 = java.util.HashMap()
-                            map1["name"] = shopLists[i][1]
-                            map1["ex"] = shopLists[i][2]
-                            Log.d("TAG", map1["name"].toString())
-                            Log.d("TAG", map1["ex"].toString())
-                            list1.add(map1)
-                            i++
-                        }
-                        _List = list1
-
-
-                        val from = arrayOf("name", "ex")
+                        val from = arrayOf("name", "explanation")
                         val to = intArrayOf(android.R.id.text1, android.R.id.text2)
                         val adapter = SimpleAdapter(
                             applicationContext,
@@ -297,73 +274,32 @@ class MenueActivity : AppCompatActivity() {
 
 //                        タップ処理
                         lv_menu_list.setOnItemClickListener { parent, view, position, id ->
-                            Toast.makeText(this, "${shopLists[position]} + $id", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "${lvSetList[position]["name"]} + $id", Toast.LENGTH_SHORT).show()
                             var intent = Intent(this, ProductActivity::class.java)
-                            intent.putExtra("PRO_TITLE", shopLists[position][1])
-                            intent.putExtra("PRO_EX", shopLists[position][2])
-                            intent.putExtra("PRO_PRICE", shopLists[position][3])
-                            intent.putExtra("PRO_KEY", shopLists[position][4])
+                            intent.putExtra("PRO_TITLE", lvSetList[position]["name"])
+                            intent.putExtra("PRO_EX", lvSetList[position]["explanation"])
+                            intent.putExtra("PRO_PRICE", lvSetList[position]["price"])
+                            intent.putExtra("PRO_KEY", lvSetList[position]["primary_key"])
 
                             startActivity(intent)
                         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//                        val texts = arrayOf("abc ", "bcd", "cde", "def", "efg",
-//                            "fgh", "ghi", "hij", "ijk", "jkl", "klm")
-//                        val listView = ListView(this)
-//                        setContentView(R.layout.activity_menue)
-//
-//                        // simple_list_item_1 は、 もともと用意されている定義済みのレイアウトファイルのID
-//                        val arrayAdapter = ArrayAdapter(this,
-//                            android.R.layout.simple_list_item_1, texts)
-//
-//
-//
-//                        lv_menu_list.adapter=arrayAdapter
-//
-//
-//                        lv_menu_list.setOnItemClickListener { parent, view, position, id ->
-//                            val title = view.findViewById<TextView>(android.R.id.text1).text
-//                            Toast.makeText(this, "$title: $id", Toast.LENGTH_SHORT).show()
-//                        }
-                        tv_menue_title.text = shopTitleName
-                        tv_menue_sabtitle.text = shopDescription
-
+                    } else {
+                        Log.d(TAG, "Current data: null")
                     }
-                    ?.addOnFailureListener { exception ->
-                        Log.w(TAG, "エラー", exception)
-                    }
+                    Log.d(TAG, "Current data Map: ${lvSetMap}")
+                    Log.d(TAG, "Current data Map: ${lvSetList}")
+                }
+
+                tv_menue_title.text = shopTitleName
+                tv_menue_sabtitle.text = shopDescription
+
+
             }
             ?.addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
-
-        Log.d(tagNa, "==============================ITEM======================================")
-        Log.d(TAG, shopId.toString())
-
-
-
-
-
 
     }
 
@@ -419,34 +355,4 @@ class MenueActivity : AppCompatActivity() {
         }
     }
 
-
-
-    /**
-     * リストがタップされたときのリスナクラス。
-     */
-    private class ListItemClickListenter : AdapterView.OnItemClickListener {
-        override fun onItemClick(
-            parent: AdapterView<*>?,
-            view: View,
-            position: Int,
-            id: Long
-        ) {
-//            val item: Map<String, String> = _List.get(position)
-//            val url = item["url"]
-        }
-    }
-
-
-
-    /**
-     * 再描画
-     */
-    fun reload() {
-        val intent = intent
-        overridePendingTransition(0, 0)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        finish()
-        overridePendingTransition(0, 0)
-        startActivity(intent)
-    }
 }
