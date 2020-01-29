@@ -34,6 +34,8 @@ class MenueActivity : AppCompatActivity() {
 
     private var _List: List<Map<String, String>>? = null
 
+    var shopTag: String = ""
+
 
     /** List **/
     private var mRecyclerView: RecyclerView? = null
@@ -47,8 +49,8 @@ class MenueActivity : AppCompatActivity() {
         setContentView(R.layout.activity_menue)
         Log.d(tagName, "===================================onCreate============================================")
 
-        val text = intent.getStringExtra("SHOP_NAME")
-        Log.d(tagName,text)
+        shopTag = intent.getStringExtra("SHOP_TAG")
+        Log.d(tagName,shopTag)
         val sampleShopName: String = "ショップ名：4号店"
 
 
@@ -170,67 +172,27 @@ class MenueActivity : AppCompatActivity() {
     private fun getShopInfo(searchName:String){
         val TAG = "getShopInfo"
         Log.d(tagName, "======================getShopInfo start====================")
-        var shopData: setData
-        var userData: setData
         var tagNa = "fDatabaseRef"
-        var shopDocList: MutableMap<String, Map<String, String>> = mutableMapOf()
-        var shopDataList = mutableListOf<Any>()
         var lvSetList: MutableList<Map<String, String>> = ArrayList()
         var lvSetMap: MutableMap<String, String> = hashMapOf()
-
 
         var shopId: Int = 0
         var shopTitleName: String = ""
         var shopDescription: String = ""
 
 //        Databaseの取得。SELECT * FROM user WHERE id = 0みたいに取れる
-        firebaseDatabase?.collection("shop")?.whereEqualTo("users", 0)
-            ?.get()
-            ?.addOnSuccessListener { result ->
-                if (result != null){
-                    for (doc in result){
-                        Log.d(TAG, "${doc.id} => ${doc.data}")
-                        shopData = setData(doc.data?.getValue("name") as String,
-                            doc.data?.getValue("shops") as Map<Any, Any>,
-                            doc.data?.getValue("attribute") as String,
-                            doc.data?.getValue("serial") as String
-                        )
-                        shopDataList.add(shopData)
-                        Log.d(TAG, "shopTitle:"+shopData.title)
-
-                    }
-//                    Log.d("getShopInfo", "DocumentSnapshot data: ${result}")
-//                    Log.d("getShopInfo", "DocumentSnapshot data: ${result.data?.get("name")}")
-//                    Log.d("getShopInfo", "DocumentSnapshot data: ${result.data?.get("shoops")}")
-//                    infoData.shopTitle = result.data?.get("name").toString()
-
-                } else {
-                    Log.d("getShopInfo", "No such document")
-                    Toast.makeText(baseContext, "データの取得に失敗\nE:Mg001", Toast.LENGTH_LONG).show()
-                }
-            }
-            ?.addOnFailureListener { exception ->
-                Log.w("getShopInfo", "Error getting documents.", exception)
-                Toast.makeText(baseContext, "データの取得に失敗\nE:Mg002", Toast.LENGTH_LONG).show()
-            }
-
-
-
-
         Log.d(tagNa, "========================================================================")
         /** ショップ情報取得 **/
         firebaseDatabase?.collection("shop")
-            ?.whereEqualTo("name", searchName)
+            ?.document(shopTag)
             ?.get()
-            ?.addOnSuccessListener { documents ->
-                for (document in documents) {
-                    Log.d(TAG, "=== shop === ${document.id} => ${document.data}")
-//                    Log.d(TAG, "${document.id} => ${document.get("shops")}")
-                    shopId = Integer.parseInt(document.id)
-                    shopTitleName = document.get("name").toString()
-                    shopDescription = document.get("description").toString()
-                    Log.d(TAG, shopId.toString())
-                }
+            ?.addOnSuccessListener { document ->
+                Log.d(TAG, "=== shop === ${document.id} => ${document.data}")
+                    Log.d(TAG, "${document.id} => ${document.get("name")}")
+                shopId = Integer.parseInt(document.id)
+                shopTitleName = document.get("name").toString()
+                shopDescription = document.get("description").toString()
+                Log.d(TAG, "=== shopId ===" + shopId.toString())
 
                 /** 商品情報取得 **/
                 val docRef = firebaseDatabase?.collection("item")
