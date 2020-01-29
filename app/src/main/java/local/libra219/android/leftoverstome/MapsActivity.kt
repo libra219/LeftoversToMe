@@ -9,14 +9,22 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.media.Image
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,19 +33,27 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.model.value.GeoPointValue
 import java.lang.NullPointerException
+import java.util.ArrayList
 
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
-    GoogleMap.OnInfoWindowClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, GoogleMap.OnInfoWindowClickListener
+{
 
     private lateinit var mMap: GoogleMap
 
     private var myLocationManager: LocationManager? = null
+    private var firebaseDatabase: FirebaseFirestore? = null
 
     private var manager: LocationManager? = null
     private var dbllat: Double = 34.699
     private var dbllot: Double = 135.492
+
+    private var markerSetList: MutableList<Map<String, Any?>> = ArrayList()
+    private var markerSetMap: MutableMap<String, Any?> = hashMapOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +64,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        /** Firebase接続 **/
+        firebaseDatabase = FirebaseFirestore.getInstance()
 
 
 
@@ -62,8 +80,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
             return
         }
-
-
         manager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1F, this)
         manager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.0F, this)
     }
@@ -115,7 +131,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 //        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
         dbllat = location.latitude
         dbllot = location.latitude
-
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -123,7 +138,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     override fun onProviderEnabled(provider: String?) {}
 
     override fun onProviderDisabled(provider: String?) {}
-
+    // 現在地の取得はLocationServices.getFusedLocationProviderClientが便利なため使わない、あと触らぬ神に祟りなし
 
     /**
      * Manipulates the map once available.
@@ -134,18 +149,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @SuppressLint("WrongConstant")
+
     override fun onMapReady(googleMap: GoogleMap) {
+        val TAG = "onMapReady"
         Log.d("d", "MapReady")
 
         mMap = googleMap
 
+//        マップの機能を有効化
         mMap.isMyLocationEnabled = true //mMap.setMyLocationEnabled(true)
         mMap.uiSettings.isZoomControlsEnabled = true
 
-//        val client = LocationServices.getFusedLocationProviderClient(this)
-
-        //
+        //現在地を取得してズームする。
         LocationServices.getFusedLocationProviderClient(this).let { client ->
             client.lastLocation.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful && task.result != null) {
@@ -164,42 +179,73 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         }
 
-        // サンプルピン
-        val daimaru = LatLng(34.701809, 135.496325)
-        mMap.addMarker(MarkerOptions()
-            .position(daimaru)
-            .title("大丸百貨店")
-        )
-        val yodobashi = LatLng(34.704060, 135.495972)
-        mMap.addMarker(MarkerOptions()
-            .position(yodobashi)
-            .title("ヨドバシカメラ")
-        )
-        val hankyu = LatLng(34.702262, 135.498897)
-        mMap.addMarker(MarkerOptions()
-            .position(hankyu)
-            .title("阪急百貨店")
-        )
+        firebaseDatabase?.collection("shop")
+            ?.get()
+            ?.addOnSuccessListener { documents ->
+                for (document in documents){
+                    Log.d(TAG, "=== get shop list === ${document.id} -> ${document.data}" )
+                    markerSetMap = hashMapOf()
+                    markerSetMap["primary_key"] = document.id
+                    markerSetMap["name"] = document.data["name"].toString()
+                    markerSetMap["description"] = document.data["description"].toString()
+                    markerSetMap["user_id"] = document.data["users"].toString()
+                    markerSetMap["img"] = document.data["img"].toString()
+                    var latLng: GeoPoint = document.data["lat_lng"] as GeoPoint
+                    markerSetMap["lat"] = latLng.latitude
+                    markerSetMap["lng"] = latLng.longitude
+
+                    markerSetList.add(markerSetMap)
+                }
+
+                /** マーカー生成 **/
+                for (list in markerSetList){
+                    var latLng = LatLng(list["lat"] as Double, list["lng"] as Double)
+                    var pinMap = mMap.addMarker(MarkerOptions()
+                        .position(latLng)
+                        .title(list["name"].toString())
+
+                    )
+                    pinMap.tag = list["primary_key"]
+                    Log.d(TAG, "=== get shop list === ${pinMap.tag}" )
+                }
+
+            }
+            ?.addOnFailureListener { exception ->
+                Log.w("MapReady", "Error getting documents.", exception)
+                Toast.makeText(baseContext, "データの取得に失敗\nE:Mg002", Toast.LENGTH_LONG).show()
+            }
 
 
 
         // マーカーがクリックされた時の処理
         mMap.setOnMarkerClickListener { marker ->
             // タップされたマーカーのタイトルを取得
-            val name = marker.title.toString()
+            val name = marker.title.toString() + marker.tag
 
             Toast.makeText(this, name, Toast.LENGTH_SHORT).show()
 
             false
         }
 
-//        マーカークリックしたときのインフォをカスタマイズ
-        mMap.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
-            override fun onInfoWindowClick(p0: Marker?) {
-                Toast.makeText(baseContext, "onInfo", Toast.LENGTH_SHORT).show()
-                dialogs()
-            }
-        } )
+//        マーカーインフォをカスタマイズ
+//        mMap.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
+//            override fun onInfoWindowClick(maker: Marker) {
+//                Toast.makeText(baseContext, "onInfo", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(this@MapsActivity, MenueActivity::class.java)
+////                dialogs(p0?.title.toString())
+//            }
+//        } )
+
+        mMap.setOnInfoWindowClickListener { marker ->
+            val tag = marker.tag.toString()
+            Toast.makeText(this, "=== onInfo ==="+tag, Toast.LENGTH_SHORT).show()
+
+            Log.d("OnInfo", tag)
+            val intent = Intent(this, MenueActivity::class.java)
+            intent.putExtra("SHOP_TAG", tag)
+
+            startActivity(intent)
+        }
 
 
 //        val cUpdate = CameraUpdateFactory.newLatLngZoom(
@@ -219,20 +265,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
 
 
+
     }
 
-    fun dialogs(): Boolean {
+//    ボトムシートを表示
+    private fun dialogs(shopTitle: String): Boolean {
+        Log.d("dialogs", shopTitle)
         val dialog = ItemListDialogFragment.newInstance(1)
+        dialog.setTextView(shopTitle)
+
         dialog.show(supportFragmentManager, dialog.tag)
         return true
     }
 
-//    Infoをクリックされたときの処理
-    override fun onInfoWindowClick(p0: Marker?) {
+//    マーカーのInfoをクリックされたときの処理
+    override fun onInfoWindowClick(maker: Marker) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         Toast.makeText(this, "onInfo", Toast.LENGTH_SHORT).show()
-        this.dialogs()
+        Log.d("onInfoWindowClick", maker.toString())
+        this.dialogs(maker.title.toString())
     }
+
+    //    InfoWindowをカスタマイズ
+    class StationInfoWindowAdapter(private val context: Context): GoogleMap.InfoWindowAdapter{
+
+        override fun getInfoContents(maker: Marker): View? = null
+        override fun getInfoWindow(maker: Marker): View? = null //setWindow(marker)
+
+        private fun setWindow(maker: Marker): View =
+            LayoutInflater.from(context).inflate(R.layout.map_info_layout, null).apply {
+                findViewById<TextView>(R.id.marker_infowindow_title).text = maker.title
+                findViewById<TextView>(R.id.marker_infowindow_snippet).text = maker.snippet
+            }
+    }
+
+
 
 
 }

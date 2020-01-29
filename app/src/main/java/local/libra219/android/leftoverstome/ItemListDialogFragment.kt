@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_item_lbottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_item_bottom_sheet_item.view.*
 
@@ -32,10 +33,26 @@ const val ARG_ITEM_COUNT = "item_count"
 class ItemListDialogFragment : BottomSheetDialogFragment() {
     private var mListener: Listener? = null
 
+    private var shopTitle: String = ""
+
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_item_lbottom_sheet,container,false)
+
+
+        btm_sheet_title.setText(shopTitle)
+
         return view
     }
+
+
+//     表示するお店のテキスト
+    fun setTextView(getString: String) {
+        Log.d("setTextView", getString)
+        shopTitle = getString
+    }
+
 
 //    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 //        list.layoutManager = LinearLayoutManager(context)
@@ -54,10 +71,10 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         parent?.let { mListener = context as Listener }
     }
 
-    override fun onDetach() {
-        mListener = null
-        super.onDetach()
-    }
+//    override fun onDetach() {
+//        mListener = null
+//        super.onDetach()
+//    }
 
     interface Listener {
         fun onItemClicked(position: Int)
@@ -86,21 +103,21 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private inner class ItemAdapter internal constructor(private val mItemCount: Int) :
-        RecyclerView.Adapter<ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context), parent)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.text.text = position.toString()
-        }
-
-        override fun getItemCount(): Int {
-            return mItemCount
-        }
-    }
+//    private inner class ItemAdapter internal constructor(private val mItemCount: Int) :
+//        RecyclerView.Adapter<ViewHolder>() {
+//
+//        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+//            return ViewHolder(LayoutInflater.from(parent.context), parent)
+//        }
+//
+//        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//            holder.text.text = position.toString()
+//        }
+//
+//        override fun getItemCount(): Int {
+//            return mItemCount
+//        }
+//    }
 
     companion object {
 
