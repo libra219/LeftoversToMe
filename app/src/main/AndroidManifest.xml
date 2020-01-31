@@ -16,7 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProductActivity"></activity>
+        <activity
+            android:name=".ManagerActivity"
+            android:label="@string/title_activity_manager"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="local.libra219.android.leftoverstome.MainActivity" />
+        </activity>
+        <activity android:name=".ProductActivity" />
         <activity android:name=".MenueActivity" />
         <activity android:name=".MypageActivity" />
         <activity android:name=".FavoritesActivity" />
