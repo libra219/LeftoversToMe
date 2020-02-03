@@ -40,6 +40,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        btn_top_manager.setOnClickListener {
+            val intent = Intent(this@MainActivity, ManagerActivity::class.java)
+            startActivity(intent)
+        }
+
         auth = FirebaseAuth.getInstance()
     }
 

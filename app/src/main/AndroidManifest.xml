@@ -16,6 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ManagerShopInfoActivity"></activity>
+        <activity android:name=".DeliveryActivity" />
+        <activity android:name=".KeepItemActivity" />
+        <activity android:name=".ManagerItemActivity" />
+        <activity android:name=".GoodsRegisterActivity" />
         <activity
             android:name=".ManagerActivity"
             android:label="@string/title_activity_manager"

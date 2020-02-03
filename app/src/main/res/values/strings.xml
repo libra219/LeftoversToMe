@@ -23,9 +23,15 @@
     <string name="title_activity_maps">Map</string>
 
     <string name="btn_keep">キープする！</string>
+    <string name="btn_del">削除</string>
+    <string name="btn_change">変更</string>
 
     <string name="btn_nav_home">HOME</string>
     <string name="btn_nav_favorites">FAVORITES</string>
     <string name="btn_nav_mypage">MYPAGE</string>
+    <string name="title_activity_manager">ManagerActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

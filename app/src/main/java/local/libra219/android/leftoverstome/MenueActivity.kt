@@ -194,7 +194,7 @@ class MenueActivity : AppCompatActivity() {
                 shopDescription = document.get("description").toString()
                 Log.d(TAG, "=== shopId ===" + shopId.toString())
 
-                /** 商品情報取得 **/
+                /** 商品情報取得 自動更新タイプ **/
                 val docRef = firebaseDatabase?.collection("item")
                     ?.whereEqualTo("shop_id", shopId)
                     ?.whereEqualTo("keep_id","0")
