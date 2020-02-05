@@ -2,11 +2,13 @@ package local.libra219.android.leftoverstome
 
 class LoginData {
 
+    var loginActive = 9999
+
     /** USER **/
     var userId: String = ""
     var userName: String = ""
     var userSerial: String = ""
-    var state: String = ""
+    var userEmail: String = ""
     var userAttribute: Int = 0
 
     /** SHOP **/
