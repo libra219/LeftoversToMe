@@ -36,7 +36,6 @@ class NotificationsFragment : Fragment() {
 
     init {
         fs = FirebaseFirestore.getInstance()
-        loginData.shopId = 4
     }
 
     override fun onCreateView(

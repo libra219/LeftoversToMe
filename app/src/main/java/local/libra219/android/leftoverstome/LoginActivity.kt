@@ -28,8 +28,6 @@ class LoginActivity : AppCompatActivity() {
 
         btn_login_email.setOnClickListener {
             createSignInIntent()
-
-
         }
 
         btn_login_check.setOnClickListener {
@@ -106,10 +104,6 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("onActivityResult","ok $user")
                 Log.d("onActivityResult","${user?.displayName} ")
 
-
-                Log.d(TAG, "============== LOGIN ID ===============")
-                Toast.makeText(this, "IDcheck", Toast.LENGTH_SHORT).show()
-
                 val userSerial = user?.uid
                 val userName = user?.displayName
                 val userEmail = user?.email
@@ -139,16 +133,6 @@ class LoginActivity : AppCompatActivity() {
                                 Log.w(TAG, "=============================== query error  ${snapshot} =============================")
                             }
                         }
-//                        .get()
-//                        .addOnSuccessListener {
-//                            Log.d(TAG, "========================== user ok ==========================")
-//                            Log.d(TAG, "========================== ${it.documents} ==========================")
-//
-//                        }
-//                        .addOnCanceledListener {
-//                            Log.d(TAG, "========================== user no ==========================")
-//
-//                        }
                 }
 
             } else {
@@ -156,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                Log.d("onActivityResult",response.toString())
+                Log.d("onActivityResult", response!!.error!!.errorCode.toString())
             }
         }
     }
