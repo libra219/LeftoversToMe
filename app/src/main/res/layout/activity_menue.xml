@@ -8,18 +8,20 @@
 
     <ImageView
         android:id="@+id/img_view_shop_top"
-        android:layout_width="402dp"
+        android:layout_width="0dp"
         android:layout_height="142dp"
+        android:adjustViewBounds="false"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/tv_menue_title"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/top_back_img" />
+        app:srcCompat="@drawable/hal_osaka" />
 
     <TextView
         android:id="@+id/tv_menue_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
@@ -40,6 +42,7 @@
         android:id="@+id/tv_menue_sabtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
         app:layout_constraintStart_toStartOf="parent"
