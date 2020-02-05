@@ -4,6 +4,7 @@ package local.libra219.android.leftoverstome
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -48,10 +49,11 @@ class MenueActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menue)
         Log.d(tagName, "===================================onCreate============================================")
+        /** 戻るボタン **/
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         shopTag = intent.getStringExtra("SHOP_TAG")
         Log.d(tagName,shopTag)
-        val sampleShopName: String = "ショップ名：4号店"
 
 
         mStorageRef = FirebaseStorage.getInstance().getReference()
@@ -66,7 +68,7 @@ class MenueActivity : AppCompatActivity() {
         mRecyclerView?.layoutManager = mLayoutManager
 
 
-        getShopInfo(sampleShopName)
+        getShopInfo(shopTag)
 
     }
 
@@ -79,6 +81,17 @@ class MenueActivity : AppCompatActivity() {
         Log.d(tagName, "===================================onStart============================================")
 
     }
+
+    /** アクションバーの選択 **/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
 
@@ -176,7 +189,7 @@ class MenueActivity : AppCompatActivity() {
         var lvSetList: MutableList<Map<String, String>> = ArrayList()
         var lvSetMap: MutableMap<String, String> = hashMapOf()
 
-        var shopId: Int = 0
+        var shopId: String = ""
         var shopTitleName: String = ""
         var shopDescription: String = ""
 
@@ -184,17 +197,17 @@ class MenueActivity : AppCompatActivity() {
         Log.d(tagNa, "========================================================================")
         /** ショップ情報取得 **/
         firebaseDatabase?.collection("shop")
-            ?.document(shopTag)
+            ?.document(searchName)
             ?.get()
             ?.addOnSuccessListener { document ->
                 Log.d(TAG, "=== shop === ${document.id} => ${document.data}")
                     Log.d(TAG, "${document.id} => ${document.get("name")}")
-                shopId = Integer.parseInt(document.id)
+                shopId = document.id
                 shopTitleName = document.get("name").toString()
                 shopDescription = document.get("description").toString()
                 Log.d(TAG, "=== shopId ===" + shopId.toString())
 
-                /** 商品情報取得 **/
+                /** 商品情報取得 自動更新タイプ **/
                 val docRef = firebaseDatabase?.collection("item")
                     ?.whereEqualTo("shop_id", shopId)
                     ?.whereEqualTo("keep_id","0")
@@ -290,13 +303,8 @@ class MenueActivity : AppCompatActivity() {
         for (i in 1..10) {
             var lat = random.nextDouble(34.5, 34.9)
             var lng = random.nextDouble(135.0, 136.0)
-            val data1 = hashMapOf(
-                "name" to "ショップ名：${i}号店",
-                "description" to "サンプル${i}",
-                "img" to "https://",
-                "users" to i,
-                "lat_lng" to GeoPoint( lat, lng)
-            )
+
+
             val itemData1 = hashMapOf(
                 "name" to "商品サンプル${i}",
                 "explanation" to "説明欄サンプル${i}",

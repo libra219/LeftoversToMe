@@ -54,29 +54,7 @@ class MypageActivity : AppCompatActivity() {
             Log.d("TAG", map["url"].toString())
             list.add(map)
         }
-        map["name"] = "@IT"
-        map["url"] = "https://www.atmarkit.co.jp/"
-        list.add(map)
-        map = HashMap()
-        map["name"] = "CodeZine"
-        map["url"] = "https://codezine.jp/"
-        list.add(map)
-        map = HashMap()
-        map["name"] = "EnterpriseZine"
-        map["url"] = "https://enterprisezine.jp/"
-        list.add(map)
-        map = HashMap()
-        map["name"] = "gihyo.jp"
-        map["url"] = "https://gihyo.jp/"
-        list.add(map)
-        map = HashMap()
-        map["name"] = "ITmediaエンタープライズ"
-        map["url"] = "https://www.itmedia.co.jp/enterprise/"
-        list.add(map)
-        map = HashMap()
-        map["name"] = "日経 xTECH"
-        map["url"] = "https://tech.nikkeibp.co.jp/"
-        list.add(map)
+
         return list
     }
 

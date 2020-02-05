@@ -1,30 +1,21 @@
 package local.libra219.android.leftoverstome
 
-
-import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.media.Image
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker
-import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -35,8 +26,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
-import com.google.firebase.firestore.model.value.GeoPointValue
-import java.lang.NullPointerException
 import java.util.ArrayList
 
 
@@ -126,18 +115,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     // 現在地取得(一定間隔）
-    override fun onLocationChanged(location: Location): Unit {
-        val text = "緯度：" + location.latitude.toString() + "経度：" + location.longitude
-//        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-        dbllat = location.latitude
-        dbllot = location.latitude
-    }
+    // override fun onLocationChanged(location: Location): Unit {
+    //     val text = "緯度：" + location.latitude.toString() + "経度：" + location.longitude
+    //    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    //     dbllat = location.latitude
+    //     dbllot = location.latitude
+    // }
 
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+    // override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
-    override fun onProviderEnabled(provider: String?) {}
+    // override fun onProviderEnabled(provider: String?) {}
 
-    override fun onProviderDisabled(provider: String?) {}
+    // override fun onProviderDisabled(provider: String?) {}
     // 現在地の取得はLocationServices.getFusedLocationProviderClientが便利なため使わない、あと触らぬ神に祟りなし
 
     /**
@@ -215,15 +204,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
                 Toast.makeText(baseContext, "データの取得に失敗\nE:Mg002", Toast.LENGTH_LONG).show()
             }
 
-
-
         // マーカーがクリックされた時の処理
         mMap.setOnMarkerClickListener { marker ->
             // タップされたマーカーのタイトルを取得
             val name = marker.title.toString() + marker.tag
 
-            Toast.makeText(this, name, Toast.LENGTH_SHORT).show()
-
+//            Toast.makeText(this, name, Toast.LENGTH_SHORT).show()
+//
             false
         }
 
@@ -238,7 +225,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
         mMap.setOnInfoWindowClickListener { marker ->
             val tag = marker.tag.toString()
-            Toast.makeText(this, "=== onInfo ==="+tag, Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "=== onInfo ==="+tag, Toast.LENGTH_SHORT).show()
 
             Log.d("OnInfo", tag)
             val intent = Intent(this, MenueActivity::class.java)
@@ -260,11 +247,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 //            )
 //            mMap.moveCamera(CurrentLocation)
 //        }
-
-
-
-
-
 
     }
 
