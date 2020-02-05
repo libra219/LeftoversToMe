@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,8 @@ class ManagerItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manager_item)
+        /** 戻るボタン **/
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         /**
          * 遷移前から取得
          */
@@ -115,6 +118,16 @@ class ManagerItemActivity : AppCompatActivity() {
                 }
                 .show()
         }
+    }
+
+    /** アクションバーの選択 **/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun reload() {
