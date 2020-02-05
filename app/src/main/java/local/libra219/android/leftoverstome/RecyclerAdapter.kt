@@ -16,7 +16,7 @@ class RecyclerAdapter {
         var mTextView: TextView
 
         init {
-            mTextView = v.findViewById(local.libra219.android.leftoverstome.R.id.textView1)
+            mTextView = v.findViewById(local.libra219.android.leftoverstome.R.id.textView)
         }
     }
 
@@ -30,7 +30,7 @@ class RecyclerAdapter {
     ): ItemViewHolder? {
         val v: View = LayoutInflater.from(parent.context)
             .inflate(
-                local.libra219.android.leftoverstome.R.layout.card_list_item,
+                local.libra219.android.leftoverstome.R.layout.card_list_view_adapter_item,
                 parent,
                 false
             )

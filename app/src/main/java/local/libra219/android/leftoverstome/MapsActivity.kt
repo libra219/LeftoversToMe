@@ -115,18 +115,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     // 現在地取得(一定間隔）
-    // override fun onLocationChanged(location: Location): Unit {
-    //     val text = "緯度：" + location.latitude.toString() + "経度：" + location.longitude
-    //    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    //     dbllat = location.latitude
-    //     dbllot = location.latitude
-    // }
+     override fun onLocationChanged(location: Location): Unit {
+         val text = "緯度：" + location.latitude.toString() + "経度：" + location.longitude
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+         dbllat = location.latitude
+         dbllot = location.latitude
+     }
 
-    // override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
-    // override fun onProviderEnabled(provider: String?) {}
+     override fun onProviderEnabled(provider: String?) {}
 
-    // override fun onProviderDisabled(provider: String?) {}
+     override fun onProviderDisabled(provider: String?) {}
     // 現在地の取得はLocationServices.getFusedLocationProviderClientが便利なため使わない、あと触らぬ神に祟りなし
 
     /**
