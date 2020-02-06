@@ -249,7 +249,7 @@ class MenueActivity : AppCompatActivity() {
 
 //                        タップ処理
                         lv_menu_list.setOnItemClickListener { parent, view, position, id ->
-                            Toast.makeText(this, "${lvSetList[position]["name"]} + $id", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this, "${lvSetList[position]["name"]} + $id", Toast.LENGTH_SHORT).show()
                             var intent = Intent(this, ProductActivity::class.java)
                             intent.putExtra("PRO_TITLE", lvSetList[position]["name"])
                             intent.putExtra("PRO_EX", lvSetList[position]["explanation"])
