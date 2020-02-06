@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_delivery.*
 
@@ -49,7 +48,7 @@ class DeliveryActivity : AppCompatActivity() {
                 }
         }
 
-        btn_delevery_del.setOnClickListener {
+        btn_delivery_del.setOnClickListener {
             fs!!.collection("item")
                 .document(primaryKey)
                 .delete()
