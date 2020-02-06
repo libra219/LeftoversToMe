@@ -2,7 +2,9 @@ package local.libra219.android.leftoverstome
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,6 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     private var fs: FirebaseFirestore? = null
 
+    private lateinit var dataStore: SharedPreferences
+
     init {
         fs = FirebaseFirestore.getInstance()
     }
@@ -33,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_top)
 
+        // SharedPreferencesインスタンスを生成
+        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
         val btnIntent = findViewById<Button>(R.id.btn_top_registration)
         btnIntent.setOnClickListener (object : View.OnClickListener {
@@ -118,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             if (snapshot != null && snapshot.documents.size == 0){
-                                // 新規登録
+                                /** 新規登録 **/
                                 Log.d(TAG, "=============================== ${snapshot.documents.size} =============================")
                                 val intent = Intent(this, LoginRegisterActivity::class.java)
                                 intent.putExtra("USER_SERIAL", userSerial)
@@ -132,19 +138,32 @@ class MainActivity : AppCompatActivity() {
 
                                 for (doc in snapshot){
                                     Log.d(TAG, "=============================== dco : ${doc} =============================")
-                                    Log.d(TAG, "=============================== doc ID :${doc.id} =============================")
-                                    Log.d(TAG, "=============================== doc ATTRIBUTE :${doc["attribute"]} =============================")
 
-                                    LoginData().userId = doc.id
-                                    LoginData().userSerial = doc["serial"].toString()
-                                    LoginData().userName = doc["name"].toString()
-                                    LoginData().userAttribute = doc["attribute"].toString().toInt()
-                                    LoginData().userEmail = doc["email"].toString()
+                                    var docUserId = doc.id
+                                    var docUserSerial = doc["serial"].toString()
+                                    var docUserName = doc["name"].toString()
+                                    var docUserAttribute = doc["attribute"].toString().toInt()
+                                    var docUserEmail = doc["email"].toString()
 
+                                    // 文字列を"Input"に書き込む
+                                    val editor = dataStore.edit()
+                                    editor.putString("UserId", doc.id)
+                                    editor.putString("UserSerial", doc["serial"].toString())
+                                    editor.putString("UserName", doc["name"].toString())
+                                    editor.putInt("UserAttribute", doc["attribute"].toString().toInt())
+                                    editor.putString("UserEmail", doc["email"].toString())
+                                    //editor.commit();
+                                    editor.apply()
+                                    Log.d(TAG, dataStore.all.toString())
                                     if (doc["attribute"].toString() == "0"){
                                         /** 購入 **/
                                         Log.d(TAG, "=============================== ユーザーログイン =============================")
                                         val intent = Intent(this, MapsActivity::class.java)
+                                        intent.putExtra("USER_ID", docUserId)
+                                        intent.putExtra("USER_SERIAL", docUserSerial)
+                                        intent.putExtra("USER_NAME", docUserName)
+                                        intent.putExtra("USER_ATTRIBUTE", docUserAttribute)
+                                        intent.putExtra("USER_EMAIL", docUserEmail)
                                         startActivity(intent)
                                         finish()
                                     }else if (doc["attribute"].toString() == "1"){

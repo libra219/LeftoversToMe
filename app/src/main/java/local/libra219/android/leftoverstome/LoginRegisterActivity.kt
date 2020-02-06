@@ -1,7 +1,9 @@
 package local.libra219.android.leftoverstome
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
@@ -25,8 +27,11 @@ class LoginRegisterActivity : AppCompatActivity() {
     /** Firebase **/
     private var fs: FirebaseFirestore? = null
 
+    private lateinit var dataStore: SharedPreferences
+
     init {
         fs = FirebaseFirestore.getInstance()
+        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,6 +139,15 @@ class LoginRegisterActivity : AppCompatActivity() {
                                 LoginData().userName = getTextUser
                                 LoginData().userSerial = userSerial
                                 LoginData().userAttribute = radioIndex
+                                // 文字列を"Input"に書き込む
+                                val editor = dataStore.edit()
+                                editor.putString("UserId", user.id)
+                                editor.putString("UserSerial",userSerial)
+                                editor.putString("UserName", getTextUser)
+                                editor.putInt("UserAttribute", radioIndex)
+                                editor.putString("UserEmail", getTextEmail)
+                                //editor.commit();
+                                editor.apply()
 
                                 if (radioIndex == 1){
                                     /** ショップ登録あり **/
@@ -151,13 +165,15 @@ class LoginRegisterActivity : AppCompatActivity() {
                                         .addOnSuccessListener {shop ->
                                             Log.d(TAG, "====================ショップ登録成功=====================")
                                             Toast.makeText(this, "登録しました", Toast.LENGTH_SHORT).show()
-                                            LoginData().shopId = shop.id
-                                            LoginData().shopName = getTextShopName
-                                            LoginData().description = getTextShopEx
-                                            LoginData().shopAddress = getTextShopAdd
-                                            LoginData().shopLatitude = latitude
-                                            LoginData().shopLongitude = longitude
-                                            LoginData().shopUserId = user.id
+
+                                            val editor = dataStore.edit()
+                                            editor.putString("shopId", shop.id)
+                                            editor.putString("shopName", getTextShopName)
+                                            editor.putString("shopDescription", getTextShopEx)
+                                            editor.putString("shopAddress", getTextShopAdd)
+                                            editor.putString("shopUserId", user.id)
+                                            editor.apply()
+
                                             val intent = Intent(this, ManagerActivity::class.java)
                                             startActivity(intent)
                                             finish()
@@ -180,7 +196,6 @@ class LoginRegisterActivity : AppCompatActivity() {
                                         "ERROR : $e")
                                 Toast.makeText(this, "登録に失敗しました", Toast.LENGTH_SHORT).show()
                             }
-
 
                     }
                     .setNegativeButton("No") { dialog, which ->

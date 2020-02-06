@@ -1,6 +1,8 @@
 package local.libra219.android.leftoverstome.ui.home
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,10 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import local.libra219.android.leftoverstome.GoodsRegisterActivity
-import local.libra219.android.leftoverstome.ManagerShopInfoActivity
-import local.libra219.android.leftoverstome.MyAdapter
-import local.libra219.android.leftoverstome.R
+import local.libra219.android.leftoverstome.*
 
 class HomeFragment : Fragment() {
 
@@ -27,12 +26,21 @@ class HomeFragment : Fragment() {
 
     private val TAG = "HomeFragment"
 
+    private lateinit var dataStore: SharedPreferences
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "========================onCreateView================================")
+
+        // SharedPreferencesインスタンスを生成
+        dataStore = this.context!!.getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+
+        Log.d(TAG, "==================== ログイン ${dataStore.all} =================")
+
 
 
         homeViewModel =
