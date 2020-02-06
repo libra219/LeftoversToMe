@@ -25,14 +25,14 @@
                 android:src="@drawable/btn_twitter"/>
 
             <TextView
+                android:id="@+id/btm_sheet_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Share"
-                android:textColor="#000000"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:textColor="#000000" />
 
         </LinearLayout>
 
