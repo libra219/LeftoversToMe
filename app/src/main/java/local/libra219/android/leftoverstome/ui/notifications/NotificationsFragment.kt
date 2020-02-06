@@ -1,6 +1,8 @@
 package local.libra219.android.leftoverstome.ui.notifications
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,7 +31,8 @@ class NotificationsFragment : Fragment() {
     /** Firebase  **/
     private var fs: FirebaseFirestore? = null
 
-    private var loginData = LoginData()
+    private lateinit var dataStore: SharedPreferences
+
 
     private var _itemSetList: MutableList<Map<String, Any>> = mutableListOf()
     private var itemSetMap: MutableMap<String, Any> = mutableMapOf()
@@ -51,8 +54,12 @@ class NotificationsFragment : Fragment() {
             textView.text = it
         })
 
+        // SharedPreferencesインスタンスを生成
+        dataStore = this.context!!.getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+        val shopId = dataStore.getString("shopId", "")
+
         fs!!.collection("item")
-            .whereEqualTo("shop_id", loginData.shopId)
+            .whereEqualTo("shop_id", shopId)
             .whereGreaterThan("keep_id", "0")
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null){

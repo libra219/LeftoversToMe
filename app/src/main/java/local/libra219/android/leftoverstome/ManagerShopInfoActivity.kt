@@ -1,7 +1,9 @@
 package local.libra219.android.leftoverstome
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -20,11 +22,10 @@ class ManagerShopInfoActivity : AppCompatActivity() {
     private val TAG = "ManagerShopInfoActivity"
     private var fs: FirebaseFirestore? = null
 
-    private var loginData = LoginData()
+    private lateinit var dataStore: SharedPreferences
 
     init {
         fs = FirebaseFirestore.getInstance()
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,39 +34,42 @@ class ManagerShopInfoActivity : AppCompatActivity() {
         /** 戻るボタン **/
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // SharedPreferencesインスタンスを生成
+        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+
         fs!!.collection("shop")
-            .whereEqualTo("users", loginData.userId)
+            .whereEqualTo("users", dataStore.getString("UserId", "").toString())
             .get()
             .addOnSuccessListener { documents ->
                 Log.d(TAG, "============================ OnSuccess =================================")
                 if (documents != null){
-                    for (document in documents){
-                        Log.d(TAG, document.toString())
-                        loginData.shopId = document.id
-                        loginData.shopName = document.get("name").toString()
-                        loginData.shopUserId = document.get("users").toString()
-                        loginData.shopImg = document.get("img").toString()
-                        loginData.shopAddress = document.get("address").toString()
-                        loginData.description = document.get("description").toString()
-                        val LatLng : GeoPoint = document.get("lat_lng") as GeoPoint
-                        loginData.shopLatitude = LatLng.latitude
-                        loginData.shopLongitude = LatLng.longitude
-                        Log.d(TAG, loginData.toString())
+                    for (doc in documents){
+                        Log.d(TAG, doc.toString())
+
+                        val editor = dataStore.edit()
+                        editor.putString("shopId", doc.id)
+                        editor.putString("shopName", doc["name"].toString())
+                        editor.putString("shopDescription", doc["description"].toString())
+                        editor.putString("shopAddress", doc["address"].toString())
+                        editor.putString("shopUserId", doc["users"].toString())
+                        editor.putString("ShopImg", doc["img"].toString())
+                        //editor.commit();
+                        editor.apply()
+
                     }
 
-                    et_manager_shop_name.setText(loginData.shopName, TextView.BufferType.NORMAL)
-                    et_manager_shop_description.setText(loginData.description, TextView.BufferType.NORMAL)
-                    et_manager_shop_add.setText(loginData.shopAddress, TextView.BufferType.NORMAL)
-                    et_manager_shop_lat.setText(loginData.shopLatitude.toString(), TextView.BufferType.NORMAL)
-                    et_manager_shop_lng.setText(loginData.shopLongitude.toString(), TextView.BufferType.NORMAL)
+                    et_manager_shop_name.setText(dataStore.getString("shopName", ""), TextView.BufferType.NORMAL)
+                    et_manager_shop_description.setText(dataStore.getString("shopDescription", ""), TextView.BufferType.NORMAL)
+                    et_manager_shop_add.setText(dataStore.getString("shopAddress", ""), TextView.BufferType.NORMAL)
+                    et_manager_shop_lat.setText(dataStore.getString("", ""), TextView.BufferType.NORMAL)
+                    et_manager_shop_lng.setText(dataStore.getString("", ""), TextView.BufferType.NORMAL)
                 }
             }
 
 
 
         btn_manager_shop_info_change.setOnClickListener {
-            Log.d(TAG, "========================= BTN CHANGE =========================${loginData.shopId}")
-
+            Log.d(TAG, "========================= BTN CHANGE =========================")
 
             /** 住所から緯度経度取得 **/
             var gcoder: Geocoder? = Geocoder(this, Locale.getDefault())
@@ -94,21 +98,20 @@ class ManagerShopInfoActivity : AppCompatActivity() {
                     .setPositiveButton("OK") { dialog, which ->
                         Log.d(TAG, "入力Ok")
                         fs!!.collection("shop")
-                            .document(loginData.shopId.toString())
+                            .document(dataStore.getString("shopId", "").toString())
                             .update(
                                 mapOf(
                                     "name" to et_manager_shop_name.text.toString(),
                                     "description" to et_manager_shop_description.text.toString(),
                                     "address" to et_manager_shop_add.text.toString(),
                                     "lat_lng" to GeoPoint(latitude, longitude),
-                                    "users" to loginData.userId,
+                                    "users" to dataStore.getString("UserId", "").toString(),
                                     "img" to "https://"
                                 )
                             )
                             .addOnSuccessListener {
                                 Log.d(TAG, "====================Change 成功=====================")
                                 Toast.makeText(this, "変更しました", Toast.LENGTH_SHORT).show()
-                                reload()
                             }
                             .addOnFailureListener { e ->
                                 Log.d(TAG, "====================Change 失敗=====================\n" +

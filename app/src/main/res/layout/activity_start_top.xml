@@ -48,6 +48,7 @@
         android:layout_marginBottom="16dp"
         android:background="#009688"
         android:text="@string/btn_registration"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/btn_top_login"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent" />

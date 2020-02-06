@@ -1,6 +1,8 @@
 package local.libra219.android.leftoverstome
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -13,13 +15,10 @@ import kotlinx.android.synthetic.main.activity_goods_register.*
 class GoodsRegisterActivity : AppCompatActivity() {
     private val TAG = "GoodsRegisterActivity"
 
-    var dummyShopId = 4
+    private lateinit var dataStore: SharedPreferences
 
     /** Firebase  **/
     private var fs: FirebaseFirestore? = null
-    private var itemCount = 0
-    var ls: Any? = null
-    var ccc: Any? = null
 
     data class itemData(
         var name: String = "",
@@ -27,7 +26,7 @@ class GoodsRegisterActivity : AppCompatActivity() {
         var sale: Int = 0,
         var img: String = "",
         var explanation: String = "",
-        var shop_id: Int = 0,
+        var shop_id: String = "0",
         var keep_id: String = "0"
     )
 
@@ -35,15 +34,6 @@ class GoodsRegisterActivity : AppCompatActivity() {
         Log.d(TAG, "=================init===========================")
 
         fs = FirebaseFirestore.getInstance()
-        fs!!.collection("item").get()
-        Log.d(TAG,  "getItem count"+itemCount.toString())
-
-        ls = fs!!.collection("item").get().addOnSuccessListener {
-
-            ccc = it.toObjects(InfoData::class.java)
-            itemCount = it.size()
-
-        }
 
     }
 
@@ -52,13 +42,13 @@ class GoodsRegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_goods_register)
 
-        getItemList()
-        Log.d(TAG,  "getItem count"+itemCount.toString())
+        // SharedPreferencesインスタンスを生成
+        dataStore = this!!.getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+
+        Log.d(TAG, "====================== LoginData ${dataStore.all} =======================")
+
 
         btn_goods_success.setOnClickListener {
-            Log.d(TAG, ls.toString())
-            Log.d(TAG, ccc.toString())
-            Log.d(TAG, itemCount.toString())
 
             val name = et_goods_name.text.toString()
             val price = et_goods_price.text.toString()
@@ -74,8 +64,8 @@ class GoodsRegisterActivity : AppCompatActivity() {
                             "よろしいですか？")
                     .setPositiveButton("OK") { dialog, which ->
                         Log.d(TAG, "入力Ok")
-                        var proData = itemData(name, price.toInt(),90,"https://", explanation, dummyShopId)
-                        setItem(itemCount, proData)
+                        var proData = itemData(name, price.toInt(),90,"https://", explanation, dataStore.getString("shopId",null).toString())
+                        setItem(1, proData)
 
                     }
                     .setNegativeButton("No") { dialog, which ->
@@ -96,21 +86,9 @@ class GoodsRegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun getItemList(){
-        Log.d(TAG, "======================getItemList Start=========================")
-        var itemListCount = 0
 
-        Log.d(TAG, "=================no get===========================")
-        Log.d(TAG,  "getItem count"+itemCount.toString())
-
-
-    }
-
-    private fun setItem(id: Int, itemData: itemData){
+    private fun setItem(id: Any, itemData: itemData){
         Log.d(TAG, "======================setItemList Start=========================")
-        Log.d(TAG, ls.toString())
-        Log.d(TAG, ccc.toString())
-        Log.d(TAG, itemCount.toString())
 
         fs!!.collection("item")
             .document()

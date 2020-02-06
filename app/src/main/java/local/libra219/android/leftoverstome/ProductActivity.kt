@@ -1,5 +1,7 @@
 package local.libra219.android.leftoverstome
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +16,7 @@ class ProductActivity : AppCompatActivity() {
      */
     private var firebaseDatabase: FirebaseFirestore? = null
     private val TAG = "ProductActivity"
+    private lateinit var dataStore: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +31,10 @@ class ProductActivity : AppCompatActivity() {
         val explanation = intent.getStringExtra("PRO_EX")
         val price = intent.getStringExtra("PRO_PRICE")
         val key = intent.getStringExtra("PRO_KEY")
-        // ユーザーデータ
-        val userId = LoginData().userId
+
+        // SharedPreferencesインスタンスを生成
+        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+        val userId = dataStore.getString("UserId", "0")
 
         tv_product_title.text = title
         tv_product_ex.text = explanation
@@ -41,6 +46,7 @@ class ProductActivity : AppCompatActivity() {
         firebaseDatabase = FirebaseFirestore.getInstance()
 
         btn_product_keep.setOnClickListener {
+            
             firebaseDatabase?.collection("item")?.document(key)
                 ?.update("keep_id", userId)
                 ?.addOnSuccessListener {

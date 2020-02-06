@@ -117,7 +117,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     // 現在地取得(一定間隔）
      override fun onLocationChanged(location: Location): Unit {
          val text = "緯度：" + location.latitude.toString() + "経度：" + location.longitude
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+//        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
          dbllat = location.latitude
          dbllot = location.latitude
      }
