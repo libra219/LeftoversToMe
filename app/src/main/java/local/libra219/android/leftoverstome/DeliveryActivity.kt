@@ -32,7 +32,7 @@ class DeliveryActivity : AppCompatActivity() {
         tv_delivery_name.text = name
         tv_delivery_price.text = price
         tv_delivery_id.text = keepId
-        tv_delivery_limit.text = "XX"
+        tv_delivery_limit.text = "2020/2/7 18:00"
 
         btn_delivery_ok.setOnClickListener {
             fs!!.collection("item")
@@ -40,12 +40,12 @@ class DeliveryActivity : AppCompatActivity() {
                 .update("keep_id", "0")
                 .addOnSuccessListener {
                     Log.d(TAG, "======================= $TAG CLEAN OK ================================")
-                    Toast.makeText(this, "完了しました！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "キープが完了しました！", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Not CLEAN ERRER $e")
-                    Toast.makeText(this, "失敗しました！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "キープに失敗しました！", Toast.LENGTH_SHORT).show()
                 }
         }
 

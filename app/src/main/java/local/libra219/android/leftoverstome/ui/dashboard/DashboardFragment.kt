@@ -95,7 +95,6 @@ class DashboardFragment : Fragment() {
 
                 }
                     ,{
-                        Toast.makeText(this.context, it.toString(), Toast.LENGTH_LONG).show()
                         val intent = Intent(this.context, ManagerItemActivity::class.java)
                         intent.putExtra("PRIMARY_KEY", it.toString())
                         startActivity(intent)
