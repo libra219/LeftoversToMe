@@ -64,7 +64,7 @@ class GoodsRegisterActivity : AppCompatActivity() {
                             "よろしいですか？")
                     .setPositiveButton("OK") { dialog, which ->
                         Log.d(TAG, "入力Ok")
-                        var proData = itemData(name, price.toInt(),90,"https://", explanation, dataStore.getString("UserId",null).toString())
+                        var proData = itemData(name, price.toInt(),90,"https://", explanation, dataStore.getString("shopId",null).toString())
                         setItem(1, proData)
 
                     }

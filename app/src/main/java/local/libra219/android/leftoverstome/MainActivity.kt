@@ -76,13 +76,12 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 //         Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
-
     }
 
     private fun createSignInIntent() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.PhoneBuilder().build(),
+//            AuthUI.IdpConfig.PhoneBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
 //            AuthUI.IdpConfig.FacebookBuilder().build(),
 //            AuthUI.IdpConfig.TwitterBuilder().build()
@@ -175,7 +174,6 @@ class MainActivity : AppCompatActivity() {
                                     }else{
                                         Log.d(TAG, "=============================== イレギュラーログイン =============================")
                                         Toast.makeText(this, "このユーザーのログインはできません。", Toast.LENGTH_SHORT).show()
-
                                     }
                                 }
                             }else{
@@ -183,7 +181,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                 }
-
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
