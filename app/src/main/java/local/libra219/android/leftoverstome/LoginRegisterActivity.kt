@@ -31,12 +31,13 @@ class LoginRegisterActivity : AppCompatActivity() {
 
     init {
         fs = FirebaseFirestore.getInstance()
-        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_register)
+
+        dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
         val userSerial = intent.getStringExtra("USER_SERIAL")
         val userName = intent.getStringExtra("USER_NAME")
@@ -46,7 +47,6 @@ class LoginRegisterActivity : AppCompatActivity() {
         tv_register_email.text = userEmail
 
         rBtn_sale.setOnClickListener {
-            Toast.makeText(this, "選択", Toast.LENGTH_SHORT).show()
             layout_sale.visibility = View.VISIBLE
         }
 
@@ -133,7 +133,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                             .add(dataSetUserMap)
                             .addOnSuccessListener { user ->
                                 Log.d(TAG, "====================ユーザー登録成功=====================")
-                                Toast.makeText(this, "${user.id}", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(this, "${user.id}", Toast.LENGTH_SHORT).show()
 
                                 LoginData().userId = user.id
                                 LoginData().userName = getTextUser

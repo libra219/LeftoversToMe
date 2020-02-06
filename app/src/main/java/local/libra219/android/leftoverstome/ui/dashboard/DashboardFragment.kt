@@ -1,6 +1,8 @@
 package local.libra219.android.leftoverstome.ui.dashboard
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,7 +32,7 @@ class DashboardFragment : Fragment() {
     /** Firebase  **/
     private var fs: FirebaseFirestore? = null
 
-    private var loginData = LoginData()
+    private lateinit var dataStore: SharedPreferences
 
     private var _itemSetList: MutableList<Map<String, Any>> = mutableListOf()
     private var itemSetMap: MutableMap<String, Any> = mutableMapOf()
@@ -52,9 +54,13 @@ class DashboardFragment : Fragment() {
             textView.text = it
         })
 
+        // SharedPreferencesインスタンスを生成
+        dataStore = this.context!!.getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+        val shopId = dataStore.getString("shopId", "")
+        Log.d(TAG, "===================$shopId====================")
 
         fs!!.collection("item")
-            .whereEqualTo("shop_id", loginData.shopId)
+            .whereEqualTo("shop_id", shopId)
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null){
                     Log.w(TAG, "エラー", exception)
