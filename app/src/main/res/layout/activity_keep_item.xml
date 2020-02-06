@@ -4,20 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DeliveryActivity">
-
-    <Button
-        android:id="@+id/btn_delivery_del"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#00BCD4"
-        android:text="お渡し完了、削除"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_delivery_ok"
-        app:layout_constraintStart_toStartOf="parent" />
+    tools:context=".KeepItemActivity">
 
     <TextView
         android:id="@+id/tv_keep_name_in_0"
@@ -40,9 +27,9 @@
         android:layout_marginEnd="16dp"
         android:text="価格"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_delivery_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_keep_item_name" />
 
     <TextView
         android:id="@+id/tv_keep_name_in_2"
@@ -53,9 +40,9 @@
         android:layout_marginEnd="16dp"
         android:text="受け取り期限"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_delivery_price" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_keep_item_price" />
 
     <TextView
         android:id="@+id/tv_keep_name_in_3"
@@ -68,10 +55,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_delivery_limit" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_keep_item_limit" />
 
     <TextView
-        android:id="@+id/tv_delivery_name"
+        android:id="@+id/tv_keep_item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -83,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_keep_name_in_0" />
 
     <TextView
-        android:id="@+id/tv_delivery_price"
+        android:id="@+id/tv_keep_item_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -95,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_keep_name_in_1" />
 
     <TextView
-        android:id="@+id/tv_delivery_limit"
+        android:id="@+id/tv_keep_item_limit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -107,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_keep_name_in_2" />
 
     <TextView
-        android:id="@+id/tv_delivery_id"
+        android:id="@+id/tv_keep_item_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -119,13 +106,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_keep_name_in_3" />
 
     <Button
-        android:id="@+id/btn_delivery_ok"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_keep_item_del"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="お渡し完了"
+        android:backgroundTint="#FFEB3B"
+        android:text="キープを取り消す"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

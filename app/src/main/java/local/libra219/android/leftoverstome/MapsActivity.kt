@@ -95,21 +95,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.btn_menu_home -> {
-                val intent = Intent(this, MapsActivity::class.java)
+            R.id.btn_keep -> {
+                val intent = Intent(this, KeepListActivity::class.java)
                 startActivity(intent)
                 return true
             }
-            R.id.btn_menu_favorites -> {
-                val intent = Intent(this, FavoritesActivity::class.java)
-                startActivity(intent)
-                return true
-            }
-            R.id.btn_menu_mypage -> {
-                val intent = Intent(this, MypageActivity::class.java)
-                startActivity(intent)
-                return true
-            }
+//            R.id.btn_menu_home -> {
+//                val intent = Intent(this, MapsActivity::class.java)
+//                startActivity(intent)
+//                return true
+//            }
+//            R.id.btn_menu_favorites -> {
+//                val intent = Intent(this, FavoritesActivity::class.java)
+//                startActivity(intent)
+//                return true
+//            }
+//            R.id.btn_menu_mypage -> {
+//                val intent = Intent(this, MypageActivity::class.java)
+//                startActivity(intent)
+//                return true
+//            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
