@@ -1,10 +1,14 @@
 package local.libra219.android.leftoverstome
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.CaptureActivity
 import kotlinx.android.synthetic.main.activity_delivery.*
 
 class DeliveryActivity : AppCompatActivity() {
@@ -21,6 +25,8 @@ class DeliveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delivery)
+        /** 戻るボタン **/
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         /** 受け取り **/
         val primaryKey = intent.getStringExtra("PRIMARY_KEY")
@@ -63,5 +69,34 @@ class DeliveryActivity : AppCompatActivity() {
                 }
         }
 
+        btn_delivery_qr_read.setOnClickListener {
+            val intentIntegrator = IntentIntegrator(this).apply {
+                captureActivity = MyCaptureActivity::class.java
+            }
+            intentIntegrator.initiateScan()
+        }
+
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data)
+        var code: String = intentResult.contents
+
+        if (intentResult != null && code != null){
+            Toast.makeText(this, code, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /** アクションバーの選択 **/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
