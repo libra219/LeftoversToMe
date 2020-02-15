@@ -6,7 +6,7 @@
         android:id="@+id/btn_keep"
         android:checkable="true"
         android:enabled="true"
-        android:icon="@drawable/shopping_cart_solid"
+        android:icon="@mipmap/shopping_cart_solid"
         android:title="keep"
         android:visible="true"
         app:showAsAction="always|withText"></item>
