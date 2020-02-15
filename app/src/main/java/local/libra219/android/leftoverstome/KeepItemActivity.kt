@@ -5,10 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.AndroidRuntimeException
 import android.util.Log
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.WriterException
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_keep_item.*
 
 class KeepItemActivity : AppCompatActivity() {
@@ -26,10 +31,13 @@ class KeepItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_keep_item)
+        /** 戻るボタン **/
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
         val itemId = intent.getStringExtra("ITEM_ID").toString()
+        val qrSize = 500
 
         fs!!.collection("item")
             .document(itemId)
@@ -40,6 +48,18 @@ class KeepItemActivity : AppCompatActivity() {
                     tv_keep_item_price.text = it["price"].toString()
                     tv_keep_item_id.text = it["keep_id"].toString()
                     tv_keep_item_limit.text = "2020/02/07 18:00"
+
+                    try {
+                        val barcodeEncoder = BarcodeEncoder()
+                        /** QRコードをBitmapで生成 **/
+                        val qpMap = barcodeEncoder.encodeBitmap(tv_keep_item_id.text.toString(), BarcodeFormat.QR_CODE, qrSize, qrSize)
+
+                        /** QRコード表示 **/
+                        img_qr.setImageBitmap(qpMap)
+
+                    }catch (e: WriterException){
+                        throw AndroidRuntimeException("Barcode Error.", e)
+                    }
                 }
             }
 
@@ -72,6 +92,16 @@ class KeepItemActivity : AppCompatActivity() {
                 }
                 .show()
         }
+    }
+
+    /** アクションバーの選択 **/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
