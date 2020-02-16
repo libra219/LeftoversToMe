@@ -17,6 +17,10 @@ class DeliveryActivity : AppCompatActivity() {
 
     /** Firebase  **/
     private var fs: FirebaseFirestore? = null
+    private lateinit var primaryKey: String
+    private lateinit var name: String
+    private lateinit var price: String
+    private lateinit var keepId: String
 
     init {
         fs = FirebaseFirestore.getInstance()
@@ -29,10 +33,10 @@ class DeliveryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         /** 受け取り **/
-        val primaryKey = intent.getStringExtra("PRIMARY_KEY")
-        val name = intent.getStringExtra("NAME")
-        val price = intent.getStringExtra("PRICE")
-        val keepId = intent.getStringExtra("KEEP_ID")
+        primaryKey = intent.getStringExtra("PRIMARY_KEY")
+        name = intent.getStringExtra("NAME")
+        price = intent.getStringExtra("PRICE")
+        keepId = intent.getStringExtra("KEEP_ID")
 
         tv_delivery_name.text = name
         tv_delivery_price.text = price
@@ -85,7 +89,23 @@ class DeliveryActivity : AppCompatActivity() {
         var code: String = intentResult.contents
 
         if (intentResult != null && code != null){
-            Toast.makeText(this, code, Toast.LENGTH_SHORT).show()
+            if (code == keepId){
+                Toast.makeText(this, "ID一致", Toast.LENGTH_SHORT).show()
+                fs!!.collection("item")
+                    .document(primaryKey)
+                    .update("keep_id", "0")
+                    .addOnSuccessListener {
+                        Log.d(TAG, "======================= $TAG CLEAN OK ================================")
+                        Toast.makeText(this, "受け渡し完了しました！", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Not CLEAN ERRER $e")
+                        Toast.makeText(this, "認証失敗しました！", Toast.LENGTH_SHORT).show()
+                    }
+            }else{
+                Toast.makeText(this, "ID不一致", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
