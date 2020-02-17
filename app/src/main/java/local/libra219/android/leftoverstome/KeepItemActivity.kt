@@ -41,13 +41,22 @@ class KeepItemActivity : AppCompatActivity() {
 
         fs!!.collection("item")
             .document(itemId)
-            .get()
-            .addOnSuccessListener {
-                if(it != null){
-                    tv_keep_item_name.text = it["name"].toString()
-                    tv_keep_item_price.text = it["price"].toString()
-                    tv_keep_item_id.text = it["keep_id"].toString()
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null){
+                    Log.w(TAG, "=================== ERROR ====================== $exception")
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null){
+                    tv_keep_item_name.text = snapshot["name"].toString()
+                    tv_keep_item_price.text = snapshot["price"].toString()
+                    tv_keep_item_id.text = snapshot["keep_id"].toString()
                     tv_keep_item_limit.text = "2020/02/07 18:00"
+
+                    if (snapshot["keep_id"] == "0"){
+                        Toast.makeText(this, "受け取り完了しました。", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
 
                     try {
                         val barcodeEncoder = BarcodeEncoder()
