@@ -70,7 +70,7 @@ class NotificationsFragment : Fragment() {
                 if (snapshot != null){
                     Log.d(TAG, "============ snapshot ============ $snapshot")
                     for (document in snapshot){
-                        Log.d(TAG, document.toString())
+                        Log.d(TAG, "========================== docId: ${document.id} ===============================")
                         itemSetMap = mutableMapOf()
                         itemSetMap["primary_key"] = document.id
                         itemSetMap["name"] = document.get("name").toString()
@@ -81,24 +81,29 @@ class NotificationsFragment : Fragment() {
                         itemSetMap["keep_id"] = document.get("keep_id").toString()
                         itemSetMap["shop_id"] = document.get("shop_id").toString()
                         _itemSetList.add(itemSetMap)
+
                     }
                 }
 
                 viewManager = LinearLayoutManager(root.context)
                 viewAdapter = MyAdapter(_itemSetList, R.layout.list_view_adapter_item, R.id.tv_card_list_title
-                    ,{
-                        Log.d(TAG, "===================== it ===================== $it \n" +
-                                "${it[0]["primary_key"]}")
-                        val intent = Intent(this.context, DeliveryActivity::class.java)
-                        intent.putExtra("PRIMARY_KEY", it[0]["primary_key"].toString())
-                        intent.putExtra("NAME", it[0]["name"].toString())
-                        intent.putExtra("PRICE", it[0]["price"].toString())
-                        intent.putExtra("KEEP_ID", it[0]["keep_id"].toString())
-                        startActivity(intent)
+                    ,{lists ->
+                        Log.d(TAG, "===================== it ===================== $0 \n" +
+                                "${lists[0.toString().toInt()]["primary_key"]}")
+//                        val intent = Intent(this.context, DeliveryActivity::class.java)
+//                        intent.putExtra("PRIMARY_KEY", lists[0.toString().toInt()]["primary_key"].toString())
+//                        intent.putExtra("NAME", lists[0.toString().toInt()]["name"].toString())
+//                        intent.putExtra("PRICE", lists[0.toString().toInt()]["price"].toString())
+//                        intent.putExtra("KEEP_ID", lists[0.toString().toInt()]["keep_id"].toString())
+//                        Log.d(TAG, "========== TAGGGGGGGGGGGG : ${this.id} ============================")
+//
+//                        startActivity(intent)
                     }
                     ,{
-                        Toast.makeText(this.context, it.toString(), Toast.LENGTH_LONG).show()
-
+                        Log.d(TAG, "============================ it ${it} =======================")
+                        val intent = Intent(this.context, DeliveryActivity::class.java)
+                        intent.putExtra("PRIMARY_KEY", it.toString())
+                        startActivity(intent)
                     })
 
 
@@ -106,7 +111,7 @@ class NotificationsFragment : Fragment() {
                     // use this setting to improve performance if you know that changes
                     // in content do not change the layout size of the RecyclerView
                     Log.d(TAG, "===========findView=============")
-                    setHasFixedSize(false)
+                    setHasFixedSize(true)
 
                     // use a linear layout manager
                     layoutManager = viewManager
