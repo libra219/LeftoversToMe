@@ -185,10 +185,12 @@ class GoodsRegisterActivity : AppCompatActivity() {
             cameraUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", cameraFile)
 
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
-                if (checkCameraPermission() && chrckStoragePermission()) {
+                if (checkCameraPermission()) {
                     takePicture(cameraUri)
                 } else {
                     grantCameraPermission()
+                }
+                if (!chrckStoragePermission()){
                     grantStoreagePermission()
                 }
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
