@@ -176,7 +176,7 @@
                     android:text="イメージ" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/img_login_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_camera" />

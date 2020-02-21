@@ -1,30 +1,29 @@
 package local.libra219.android.leftoverstome
 
 import android.Manifest
-import android.R.attr
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_goods_register.*
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.lang.reflect.Parameter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,6 +41,7 @@ class GoodsRegisterActivity : AppCompatActivity() {
     companion object {
         const val CAMERA_REQUEST_CODE = 1
         const val CAMERA_PERMISSION_REQUEST_CODE = 2
+        const val STORAGE_PERMISSION_REQUEST_CODE = 10
     }
 
     data class itemData(
@@ -56,6 +56,8 @@ class GoodsRegisterActivity : AppCompatActivity() {
 
     private lateinit var bitmapImage: Bitmap
     private lateinit var downloadUri: Uri
+    private lateinit var cameraFile: File
+    private lateinit var cameraUri: Uri
 
 
     init {
@@ -169,14 +171,30 @@ class GoodsRegisterActivity : AppCompatActivity() {
 
         }
 
+        /** カメラの起動 **/
         img_register_cam.setOnClickListener {
+            // 保存先のフォルダー
+            val cFolder: File? = getExternalFilesDir(Environment.DIRECTORY_DCIM)
+
+            val fileDate = SimpleDateFormat("ddHHmmss", Locale.US).format(Date())
+            // ファイル名
+            val fileName = String.format("CameraIntent_%s.jpg", fileDate)
+
+            cameraFile = File(cFolder, fileName)
+
+            cameraUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", cameraFile)
+
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 if (checkCameraPermission()) {
-                    takePicture()
+                    takePicture(cameraUri)
                 } else {
                     grantCameraPermission()
                 }
+                if (!chrckStoragePermission()){
+                    grantStoreagePermission()
+                }
             } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
+
         }
 
     }
@@ -188,7 +206,20 @@ class GoodsRegisterActivity : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.extras?.get("data")?.let {
                 bitmapImage = it as Bitmap
+                Log.d(TAG, "==========================================  ${bitmapImage.height}")
+                Log.d(TAG, bitmapImage.width.toString())
+                Log.d(TAG, bitmapImage.byteCount.toString())
                 img_register_cam.setImageBitmap(bitmapImage)
+            }
+
+            if(cameraUri != null){
+                Log.d(TAG, "=================================== cameraUri =============================================")
+                img_register_cam.setImageURI(cameraUri)
+
+                registerDatabase(cameraFile)
+            }
+            else{
+                Log.w(TAG, "=============================== cameraUri null =================================")
             }
 
         }
@@ -224,10 +255,23 @@ class GoodsRegisterActivity : AppCompatActivity() {
         return format.format(date)
     }
 
+    /**
+     * アンドロイドのデータベースへ登録する
+     */
+    private fun registerDatabase(file: File) {
+        val contentValues = ContentValues()
+        val contentResolver = this.contentResolver
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        contentValues.put("_data", file.absolutePath)
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues)
+    }
 
-    private fun takePicture() {
+
+
+    private fun takePicture(cameraUri: Uri?) {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
             addCategory(Intent.CATEGORY_DEFAULT)
+            putExtra(MediaStore.EXTRA_OUTPUT, cameraUri)
         }
 
         startActivityForResult(intent, CAMERA_REQUEST_CODE)
@@ -239,6 +283,48 @@ class GoodsRegisterActivity : AppCompatActivity() {
             CAMERA_PERMISSION_REQUEST_CODE
         )
 
+    /** 許可 **/
+    private fun grantStoreagePermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                STORAGE_PERMISSION_REQUEST_CODE)
+        }else{
+            Toast.makeText(this,"許可がないとカメラ機能は使えません。", Toast.LENGTH_SHORT).show()
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                STORAGE_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    private fun stragePermission():Boolean {
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true
+        }else{
+            return false
+        }
+    }
+
+    /** 権限確認 **/
     private fun checkCameraPermission() = PackageManager.PERMISSION_GRANTED ==
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
+
+    private fun chrckStoragePermission() = PackageManager.PERMISSION_GRANTED ==
+            ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Log.d(TAG, "============================= 許可OK ===================================")
+            }else{
+                Log.d(TAG, "============================== 拒否 ===================================")
+                Toast.makeText(this, "ストレージの許可が無いとカメラは使えません。", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 }

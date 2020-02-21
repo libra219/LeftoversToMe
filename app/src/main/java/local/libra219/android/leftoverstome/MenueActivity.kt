@@ -249,12 +249,14 @@ class MenueActivity : AppCompatActivity() {
 
 //                        タップ処理
                         lv_menu_list.setOnItemClickListener { parent, view, position, id ->
-//                            Toast.makeText(this, "${lvSetList[position]["name"]} + $id", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this, "parent:${parent} \n view: $view \n position:$position \n id:$id \n ", Toast.LENGTH_SHORT).show()
+                            Log.d(TAG, "========= parent:${parent} view: $view position:$position id:$id")
                             var intent = Intent(this, ProductActivity::class.java)
                             intent.putExtra("PRO_TITLE", lvSetList[position]["name"])
                             intent.putExtra("PRO_EX", lvSetList[position]["explanation"])
                             intent.putExtra("PRO_PRICE", lvSetList[position]["price"])
                             intent.putExtra("PRO_KEY", lvSetList[position]["primary_key"])
+                            intent.putExtra("PRO_IMG", lvSetList[position]["img"])
 
                             startActivity(intent)
                         }

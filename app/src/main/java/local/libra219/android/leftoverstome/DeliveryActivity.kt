@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import kotlinx.android.synthetic.main.activity_delivery.*
+import kotlinx.android.synthetic.main.activity_manager_item.*
 
 class DeliveryActivity : AppCompatActivity() {
 
@@ -34,14 +36,21 @@ class DeliveryActivity : AppCompatActivity() {
 
         /** 受け取り **/
         primaryKey = intent.getStringExtra("PRIMARY_KEY")
-        name = intent.getStringExtra("NAME")
-        price = intent.getStringExtra("PRICE")
-        keepId = intent.getStringExtra("KEEP_ID")
 
-        tv_delivery_name.text = name
-        tv_delivery_price.text = price
-        tv_delivery_id.text = keepId
-        tv_delivery_limit.text = "2020/2/7 18:00"
+        /** PrimaryKeyから表示内容検索 **/
+        fs!!.collection("item")
+            .document(primaryKey)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if (snapshot != null){
+                    tv_delivery_name.setText(snapshot["name"].toString(), TextView.BufferType.NORMAL)
+                    tv_delivery_price.setText(snapshot["price"].toString(), TextView.BufferType.NORMAL)
+                    tv_delivery_id.setText(snapshot["keep_id"].toString(), TextView.BufferType.NORMAL)
+                    tv_delivery_limit.text = "2020/2/20 18:00"
+                }
+            }
+
+        Log.d(TAG, "=========================== ${primaryKey} =============================")
 
         btn_delivery_ok.setOnClickListener {
             fs!!.collection("item")
@@ -49,12 +58,12 @@ class DeliveryActivity : AppCompatActivity() {
                 .update("keep_id", "0")
                 .addOnSuccessListener {
                     Log.d(TAG, "======================= $TAG CLEAN OK ================================")
-                    Toast.makeText(this, "キープが完了しました！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "確認完了しました！", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Not CLEAN ERRER $e")
-                    Toast.makeText(this, "キープに失敗しました！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "確認に失敗しました！", Toast.LENGTH_SHORT).show()
                 }
         }
 
@@ -87,6 +96,7 @@ class DeliveryActivity : AppCompatActivity() {
 
         val intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data)
         var code: String = intentResult.contents
+        keepId = tv_delivery_id.text.toString()
 
         if (intentResult != null && code != null){
             if (code == keepId){

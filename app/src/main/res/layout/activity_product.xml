@@ -7,7 +7,7 @@
     tools:context=".ProductActivity">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/img_product"
         android:layout_width="0dp"
         android:layout_height="205dp"
         android:scaleType="centerCrop"
@@ -24,7 +24,7 @@
         android:layout_marginTop="16dp"
         android:text="商品名"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        app:layout_constraintTop_toBottomOf="@+id/img_product" />
 
     <TextView
         android:id="@+id/tv_product_title"

@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tv_menue_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/hal_osaka" />
+        app:srcCompat="@drawable/hal_tokyo" />
 
     <TextView
         android:id="@+id/tv_menue_title"
