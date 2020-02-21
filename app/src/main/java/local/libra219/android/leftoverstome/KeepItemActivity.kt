@@ -10,7 +10,9 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -21,11 +23,13 @@ class KeepItemActivity : AppCompatActivity() {
 
     /** Firebase  **/
     private var fs: FirebaseFirestore? = null
+    private var storage: FirebaseStorage? = null
     private lateinit var dataStore: SharedPreferences
 
 
     init {
         fs = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +38,7 @@ class KeepItemActivity : AppCompatActivity() {
         /** 戻るボタン **/
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        /** ローカルデータ取得 **/
         dataStore = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
         val itemId = intent.getStringExtra("ITEM_ID").toString()
