@@ -96,6 +96,7 @@ class DeliveryActivity : AppCompatActivity() {
 
         val intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data)
         var code: String = intentResult.contents
+        keepId = tv_delivery_id.text.toString()
 
         if (intentResult != null && code != null){
             if (code == keepId){
